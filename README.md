@@ -1,6 +1,5 @@
-
 local Env: table = {}
-print('1234')
+
 local TweenService: TweenService = game:GetService("TweenService")
 local UserInputService: UserInputService = game:GetService("UserInputService")
 
@@ -266,40 +265,30 @@ function Env:Window(meta)
 	Line_1.BorderColor3 = Color3.fromRGB(0,0,0)
 	Line_1.BorderSizePixel = 0
 	Line_1.Size = UDim2.new(0, 70,0, 2)
-local TweenService = game:GetService("TweenService")
+local gradient = script.Parent -- สมมุติว่า UIGradient นี้ถูกใส่ไว้ใน Frame หรือ Line_1
+local tweenService = game:GetService("TweenService")
 
--- สร้าง UIGradient
-local gradient = Instance.new("UIGradient")
-gradient.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 127)),
-	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 170, 255)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(85, 85, 255))
-}
-gradient.Rotation = 0
-gradient.Offset = Vector2.new(-1, 0) -- เริ่มซ้ายสุด
-gradient.Parent = Line_1 -- เปลี่ยน Line_1 เป็น UI ของคุณ
-
--- ฟังก์ชันวนซ้ายไปขวา แล้วกลับมาใหม่
-local function startLoop()
+-- ฟังก์ชัน Tween Offset ไปมา
+local function animateGradient()
 	while true do
-		-- Tween จากซ้ายไปขวา
-		local tween = TweenService:Create(
-			gradient,
-			TweenInfo.new(3, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-			{ Offset = Vector2.new(1, 0) }
-		)
-		tween:Play()
-		tween.Completed:Wait()
+		-- Tween ไปทางขวา
+		local tween1 = tweenService:Create(gradient, TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+			Offset = Vector2.new(1, 0)
+		})
+		tween1:Play()
+		tween1.Completed:Wait()
 
-		-- รีเซ็ตตำแหน่งทันทีไปที่ซ้าย เพื่อให้เริ่มใหม่
-		gradient.Offset = Vector2.new(-1, 0)
-
-		wait(0.1) -- พักนิดหน่อยก่อนวิ่งรอบใหม่
+		-- Tween กลับทางซ้าย
+		local tween2 = tweenService:Create(gradient, TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+			Offset = Vector2.new(-1, 0)
+		})
+		tween2:Play()
+		tween2.Completed:Wait()
 	end
 end
 
--- เริ่ม
-startLoop()
+-- เริ่ม animation
+animateGradient()
 
 	Desc_1.Name = "Desc"
 	Desc_1.Parent = Header_1
