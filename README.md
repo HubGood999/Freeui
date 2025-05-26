@@ -1,5 +1,6 @@
+
 local Env: table = {}
-print('xxx')
+print('1234')
 local TweenService: TweenService = game:GetService("TweenService")
 local UserInputService: UserInputService = game:GetService("UserInputService")
 
@@ -275,26 +276,30 @@ gradient.Color = ColorSequence.new{
 	ColorSequenceKeypoint.new(1, Color3.fromRGB(85, 85, 255))
 }
 gradient.Rotation = 0
-gradient.Offset = Vector2.new(-1, 0) -- เริ่มจากซ้ายสุด
-gradient.Parent = Line_1 -- ใส่ UI ของคุณแทน Line_1
+gradient.Offset = Vector2.new(-1, 0) -- เริ่มซ้ายสุด
+gradient.Parent = Line_1 -- เปลี่ยน Line_1 เป็น UI ของคุณ
 
--- ฟังก์ชัน Tween ไปมา
-local function tweenGradient(offsetStart, offsetEnd)
-	local tweenInfo = TweenInfo.new(
-		3, -- ระยะเวลา (เร็ว/ช้า)
-		Enum.EasingStyle.Sine, -- ทำให้นุ่มนวล
-		Enum.EasingDirection.InOut
-	)
-	local tween = TweenService:Create(gradient, tweenInfo, { Offset = offsetEnd })
-	tween:Play()
-	tween.Completed:Connect(function()
-		-- ทำซ้ำไปเรื่อย ๆ สลับทิศทาง
-		tweenGradient(offsetEnd, offsetStart)
-	end)
+-- ฟังก์ชันวนซ้ายไปขวา แล้วกลับมาใหม่
+local function startLoop()
+	while true do
+		-- Tween จากซ้ายไปขวา
+		local tween = TweenService:Create(
+			gradient,
+			TweenInfo.new(3, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+			{ Offset = Vector2.new(1, 0) }
+		)
+		tween:Play()
+		tween.Completed:Wait()
+
+		-- รีเซ็ตตำแหน่งทันทีไปที่ซ้าย เพื่อให้เริ่มใหม่
+		gradient.Offset = Vector2.new(-1, 0)
+
+		wait(0.1) -- พักนิดหน่อยก่อนวิ่งรอบใหม่
+	end
 end
 
--- เริ่ม tween
-tweenGradient(Vector2.new(-1, 0), Vector2.new(1, 0))
+-- เริ่ม
+startLoop()
 
 	Desc_1.Name = "Desc"
 	Desc_1.Parent = Header_1
