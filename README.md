@@ -265,9 +265,28 @@ function Env:Window(meta)
 	Line_1.BorderColor3 = Color3.fromRGB(0,0,0)
 	Line_1.BorderSizePixel = 0
 	Line_1.Size = UDim2.new(0, 70,0, 2)
+local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
-	UIGradient_1.Parent = Line_1
-	UIGradient_1.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 127)), ColorSequenceKeypoint.new(0.482699, Color3.fromRGB(0, 170, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(85, 85, 255))}
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 127)),
+	ColorSequenceKeypoint.new(0.482699, Color3.fromRGB(0, 170, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(85, 85, 255))
+}
+gradient.Rotation = 0
+gradient.Parent = Line_1 -- อย่าลืมเปลี่ยนเป็น Object ที่คุณใช้จริง
+
+-- ทำให้ Gradient เคลื่อนไหว
+local offset = 0
+RunService.RenderStepped:Connect(function(dt)
+	offset = offset + dt * 0.2 -- ปรับความเร็วตามต้องการ
+	if offset > 1 then
+		offset = 0
+	end
+	gradient.Offset = Vector2.new(offset, 0)
+end)
+
 
 	Desc_1.Name = "Desc"
 	Desc_1.Parent = Header_1
