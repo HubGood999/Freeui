@@ -1,3 +1,4 @@
+print("HI")
 local Env: table = {}
 
 local TweenService: TweenService = game:GetService("TweenService")
