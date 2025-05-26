@@ -265,28 +265,36 @@ function Env:Window(meta)
 	Line_1.BorderColor3 = Color3.fromRGB(0,0,0)
 	Line_1.BorderSizePixel = 0
 	Line_1.Size = UDim2.new(0, 70,0, 2)
-local UIS = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
 
+-- สร้าง UIGradient
 local gradient = Instance.new("UIGradient")
 gradient.Color = ColorSequence.new{
 	ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 127)),
-	ColorSequenceKeypoint.new(0.482699, Color3.fromRGB(0, 170, 255)),
+	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 170, 255)),
 	ColorSequenceKeypoint.new(1, Color3.fromRGB(85, 85, 255))
 }
 gradient.Rotation = 0
-gradient.Parent = Line_1 -- อย่าลืมเปลี่ยนเป็น Object ที่คุณใช้จริง
+gradient.Offset = Vector2.new(-1, 0) -- เริ่มจากซ้ายสุด
+gradient.Parent = Line_1 -- ใส่ UI ของคุณแทน Line_1
 
--- ทำให้ Gradient เคลื่อนไหว
-local offset = 0
-RunService.RenderStepped:Connect(function(dt)
-	offset = offset + dt * 0.2 -- ปรับความเร็วตามต้องการ
-	if offset > 1 then
-		offset = 0
-	end
-	gradient.Offset = Vector2.new(offset, 0)
-end)
+-- ฟังก์ชัน Tween ไปมา
+local function tweenGradient(offsetStart, offsetEnd)
+	local tweenInfo = TweenInfo.new(
+		3, -- ระยะเวลา (เร็ว/ช้า)
+		Enum.EasingStyle.Sine, -- ทำให้นุ่มนวล
+		Enum.EasingDirection.InOut
+	)
+	local tween = TweenService:Create(gradient, tweenInfo, { Offset = offsetEnd })
+	tween:Play()
+	tween.Completed:Connect(function()
+		-- ทำซ้ำไปเรื่อย ๆ สลับทิศทาง
+		tweenGradient(offsetEnd, offsetStart)
+	end)
+end
 
+-- เริ่ม tween
+tweenGradient(Vector2.new(-1, 0), Vector2.new(1, 0))
 
 	Desc_1.Name = "Desc"
 	Desc_1.Parent = Header_1
