@@ -1,6 +1,5 @@
-print("HI")
 local Env: table = {}
-
+print('xxx')
 local TweenService: TweenService = game:GetService("TweenService")
 local UserInputService: UserInputService = game:GetService("UserInputService")
 
